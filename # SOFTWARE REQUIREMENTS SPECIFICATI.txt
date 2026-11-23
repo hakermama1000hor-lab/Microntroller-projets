@@ -1,0 +1,254 @@
+# SOFTWARE REQUIREMENTS SPECIFICATION (SRS)
+
+## Project Title
+**Smart Water Tank – Automatic Overflow Prevention System**
+
+**Version:** 1.0  
+**Project Category:** IoT & Embedded Systems  
+**Simulation Platform:** Proteus 8 Professional  
+**Microcontroller:** Arduino UNO R3 (Simulation) / Arduino Nano (Final Hardware)
+
+---
+
+# 1. Introduction
+
+## 1.1 Project Overview
+
+Smart Water Tank একটি Automatic Water Level Control System। এই প্রজেক্টের মূল উদ্দেশ্য হলো পানির ট্যাংক উপচে পড়া (Water Overflow) প্রতিরোধ করা এবং পানির অপচয় কমানো।
+
+সিস্টেমটি Ultrasonic Sensor ব্যবহার করে ট্যাংকের পানির উচ্চতা পরিমাপ করবে। Arduino সেই তথ্য বিশ্লেষণ করে পানির পরিমাণ নির্ধারণ করবে।
+
+পানির পরিমাণ ৯০% হলে সিস্টেম স্বয়ংক্রিয়ভাবে পানির মোটর বন্ধ করবে। এরপর Manual Restart না করা পর্যন্ত মোটর বন্ধ থাকবে।
+
+## 1.2 Problem Statement
+
+সাধারণ পানির ট্যাংকে অনেক সময় ব্যবহারকারীকে নিজে থেকে পানির লেভেল পর্যবেক্ষণ করতে হয়।
+
+এর ফলে:
+- ট্যাংক উপচে পানি পড়ে।
+- পানির অপচয় হয়।
+- মোটর অপ্রয়োজনে চালু থাকে।
+- বারবার ট্যাংকের পানির অবস্থা পরীক্ষা করতে হয়।
+
+এই সমস্যাগুলো সমাধানের জন্য একটি Automatic Water Tank Controller তৈরি করা হবে।
+
+## 1.3 Project Objectives
+
+প্রজেক্টের প্রধান উদ্দেশ্য:
+
+1. স্বয়ংক্রিয়ভাবে পানির লেভেল পরিমাপ করা।
+2. পানির পরিমাণ Percentage হিসেবে নির্ণয় করা।
+3. ট্যাংক ৯০% পূর্ণ হলে মোটর বন্ধ করা।
+4. পানির Overflow প্রতিরোধ করা।
+5. Manual Restart ব্যবস্থা রাখা।
+6. কম খরচে ব্যবহারযোগ্য একটি Automation System তৈরি করা।
+7. বাস্তব Hardware তৈরির আগে Proteus-এ Circuit Simulation করা।
+
+---
+
+# 2. System Requirements
+
+## 2.1 Hardware Requirements
+
+| Component | Purpose |
+|---|---|
+| Arduino Nano | Main Controller |
+| HC-SR04 / Compatible Ultrasonic Sensor | Water Level Measurement |
+| 5V Relay Module | Control Interface |
+| AC Contactor | 220V Motor Switching |
+| 220V AC Motor | Water Pump |
+| Power Supply | Arduino ও Sensor Power |
+| Connecting Wires | Circuit Connection |
+| Tank Model | Prototype Testing |
+
+**Simulation Components:**
+
+- Arduino UNO R3
+- GUR03 Ultrasonic Model
+- RLY-SPNO Relay
+- 2N2222 Transistor (প্রয়োজন হলে)
+- 1N4007 Diode (Relay Coil Protection)
+- Resistors
+- LED
+- Push Button
+- Virtual Terminal
+
+Note: Proteus-এর GUR03 Model এবং বাস্তব HC-SR04-এর Interface এক নয়। GUR03-এর Signal Model ও Arduino Communication আগে যাচাই করতে হবে।
+
+## 2.2 Software Requirements
+
+| Software | Purpose |
+|---|---|
+| Proteus 8 Professional | Circuit Design & Simulation |
+| Arduino IDE | Arduino Programming |
+| Arduino Library | Supported Device Integration, প্রয়োজন অনুযায়ী |
+| Windows OS | Development Environment |
+
+---
+
+# 3. Functional Requirements
+
+সিস্টেমের Functional Requirements:
+
+**FR-01: Water Level Measurement**  
+Sensor ট্যাংকের পানির পৃষ্ঠ পর্যন্ত দূরত্ব পরিমাপ করবে।
+
+**FR-02: Water Percentage Calculation**  
+Arduino ট্যাংকের উচ্চতা ও পরিমাপ করা দূরত্ব ব্যবহার করে পানির Percentage নির্ণয় করবে।
+
+Formula:
+
+Water Level (%) = ((Tank Height - Measured Distance) / Tank Height) × 100
+
+**FR-03: Automatic Motor OFF**  
+পানির লেভেল ৯০% হলে মোটর বন্ধ হবে।
+
+**FR-04: Motor Lock State**  
+৯০% পূর্ণ হওয়ার পর পানির লেভেল কিছুটা কমলেও মোটর নিজে থেকে চালু হবে না।
+
+**FR-05: Manual Restart**  
+ব্যবহারকারী Manual Restart দিলে মোটর আবার চালু করার অনুমতি পাবে।
+
+**FR-06: Serial Monitoring**  
+Virtual Terminal-এর মাধ্যমে পানির দূরত্ব, Percentage ও Motor Status দেখা যাবে।
+
+---
+
+# 4. System Workflow
+
+1. System Power ON হবে।
+2. Ultrasonic Sensor পানির দূরত্ব পরিমাপ করবে।
+3. Arduino Sensor Data গ্রহণ করবে।
+4. Arduino Water Level Percentage হিসাব করবে।
+5. পানির লেভেল ৯০% বা তার বেশি হলে Motor OFF হবে।
+6. Motor OFF অবস্থায় Lock থাকবে।
+7. Manual Restart দিলে পুনরায় Motor চালুর অনুমতি দেওয়া হবে।
+
+---
+
+# 5. Proteus Simulation Development
+
+## Phase 1: Project Setup
+
+1. Proteus 8 Professional ওপেন করতে হবে।
+2. New Project তৈরি করতে হবে।
+3. Project Name দিতে হবে: Smart_Water_Tank।
+4. Schematic Capture নির্বাচন করতে হবে।
+5. একটি নতুন Schematic Sheet তৈরি করতে হবে।
+
+## Phase 2: Component Selection
+
+Pick Devices (P) ব্যবহার করে প্রয়োজনীয় Component খুঁজতে হবে।
+
+প্রথমে Arduino UNO R3, GUR03 Sensor, Relay এবং Virtual Terminal যোগ করতে হবে।
+
+এরপর প্রয়োজন অনুযায়ী Transistor, Diode, Resistor, LED ও Push Button যোগ করতে হবে।
+
+## Phase 3: Circuit Design
+
+প্রতিটি Component-এর Pin Configuration যাচাই করে সঠিক Wiring করতে হবে।
+
+প্রথমে Sensor ও Arduino Connection তৈরি করতে হবে।
+
+তারপর Relay Driver Circuit, LED Indicator এবং Manual Restart Circuit যুক্ত করতে হবে।
+
+## Phase 4: Arduino Programming
+
+Arduino IDE ব্যবহার করে C/C++ ভাষায় Program লিখতে হবে।
+
+Program-এর কাজ:
+- Sensor Data Read করা।
+- Water Level Calculate করা।
+- ৯০% Threshold পরীক্ষা করা।
+- Motor Control Logic পরিচালনা করা।
+- Serial Output দেখানো।
+
+## Phase 5: HEX File Integration
+
+1. Arduino IDE-তে Code Compile করতে হবে।
+2. Export Compiled Binary ব্যবহার করে HEX File তৈরি করতে হবে।
+3. Proteus-এ Arduino-এর Properties খুলতে হবে।
+4. Program File-এ HEX File নির্বাচন করতে হবে।
+5. Clock Frequency 16 MHz রাখতে হবে।
+6. Simulation চালু করতে হবে।
+
+## Phase 6: Simulation Testing
+
+বিভিন্ন Water Level পরিবর্তন করে System-এর আচরণ পরীক্ষা করতে হবে।
+
+---
+
+# 6. Testing Requirements
+
+| Test Case | Expected Result |
+|---|---|
+| পানির লেভেল ৩০% | Motor ON |
+| পানির লেভেল ৫০% | Motor ON |
+| পানির লেভেল ৮০% | Motor ON |
+| পানির লেভেল ৯০% | Motor OFF |
+| পানির লেভেল ৭০% (Lock অবস্থায়) | Motor OFF |
+| Manual Restart | Motor আবার ON হওয়ার অনুমতি পাবে |
+
+Note: এগুলো প্রত্যাশিত Test Result; বাস্তব Simulation-এ যাচাই করার পর ফলাফল Documentation-এ লিখতে হবে।
+
+---
+
+# 7. Non-Functional Requirements
+
+1. System সহজে ব্যবহারযোগ্য হতে হবে।
+2. Circuit কম খরচে তৈরি করা সম্ভব হতে হবে।
+3. Water Level Measurement নির্ভরযোগ্য হতে হবে।
+4. Sensor Error হলে নিরাপদভাবে Motor Control করতে হবে।
+5. বাস্তব Hardware-এ Electrical Safety নিশ্চিত করতে হবে।
+6. System-এর Maintenance সহজ হতে হবে।
+
+---
+
+# 8. Safety Requirements
+
+- 220V AC Motor সরাসরি Arduino বা Breadboard-এ সংযোগ করা যাবে না।
+- Motor Switching-এর জন্য উপযুক্ত AC Contactor ব্যবহার করতে হবে।
+- MCB, Overload Protection ও Earthing নিশ্চিত করতে হবে।
+- Contactor-এর Rating Motor Nameplate অনুযায়ী নির্বাচন করতে হবে।
+- বাস্তব Mains Wiring যোগ্য Electrician বা শিক্ষকের তত্ত্বাবধানে করতে হবে।
+- Proteus-এ Motor-এর পরিবর্তে LED বা Virtual Load দিয়ে ON/OFF Logic পরীক্ষা করা হবে।
+
+---
+
+# 9. Project Scope
+
+## Current Scope
+
+- Automatic Water Level Measurement
+- Water Percentage Calculation
+- 90% Automatic Motor Cut-off
+- Manual Restart
+- Relay Control
+- Proteus Simulation
+- Hardware Prototype Development
+
+## Future Scope
+
+- Mobile App Integration
+- Wi-Fi Monitoring
+- Multiple Tank Monitoring
+- Water Level History
+- Advanced Fault Detection
+
+এগুলো বর্তমান প্রজেক্টের বাধ্যতামূলক Feature নয়।
+
+---
+
+# 10. Expected Outcome
+
+প্রজেক্ট সম্পন্ন হলে একটি কার্যকর Automatic Water Tank Controller তৈরি হবে, যা পানির লেভেল পরিমাপ করতে পারবে এবং ট্যাংক ৯০% পূর্ণ হলে মোটর বন্ধ করবে।
+
+প্রথমে Proteus Simulation-এর মাধ্যমে Logic পরীক্ষা করা হবে। এরপর বাস্তব Hardware Prototype তৈরি ও পরীক্ষা করা হবে।
+
+---
+
+# 11. Conclusion
+
+Smart Water Tank Project-এর মূল লক্ষ্য হলো একটি বাস্তব সমস্যার প্রযুক্তিনির্ভর সমাধান তৈরি করা।
+
+এই প্রজেক্টের মাধ্যমে Arduino Programming, Sensor Interfacing, Circuit Design, Relay Control, Proteus Simulation এবং Embedded System Development সম্পর্কে বাস্তব অভিজ্ঞতা অর্জন করা সম্ভব হবে।
